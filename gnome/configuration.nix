@@ -8,6 +8,11 @@
     
   # Allow unfree software
   nixpkgs.config.allowUnfree = true;
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.x11 = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
+  users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = false;
@@ -63,8 +68,10 @@
     bottom
     neovim
     virtualbox
+    virtualboxExtpack
     vscode
     spotify
+    discord
     steam
     lutris
     kitty
