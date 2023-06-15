@@ -55,6 +55,7 @@
     vim
     wget
     tldr
+    starship
     neofetch
     pfetch
     nitch
@@ -62,20 +63,29 @@
     bottom
     neovim
     virtualbox
+    vscode
+    spotify
     steam
     lutris
     kitty
     alacritty
+    kitty
     firefox
     brave
     opera
     vivaldi
     vivaldi-ffmpeg-codecs
+    gparted
     bottles
     boxes
     blackbox-terminal
     gnome-extension-manager
     gnomeExtensions.appindicator
+    gnome.gnome-tweaks
+  ];
+
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
