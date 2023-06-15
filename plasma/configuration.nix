@@ -30,10 +30,11 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+  services.xserver.displayManager.defaultSession = "plasmawayland";
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  # Enable the Plasma Desktop Environment.
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -104,22 +105,15 @@
   # };
   
   services.udev.packages = with pkgs; [
-    gnome.gnome-settings-daemon
   ];
   
-  # Excluding Gnome packages
-  environment.gnome.excludePackages = (with pkgs; [
-    gnome-tour
-  ]) ++ (with pkgs.gnome; [
-    gnome-terminal
-    epiphany
-    geary
-    tali
-    iagno
-    hitori
-    atomix
-    gnome-contacts
-  ]);
+  # Excluding Plasma packages
+  environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+    elisa
+    oxygen
+    khelpcenter
+    plasma-browser-integration
+  ];
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
