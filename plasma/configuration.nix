@@ -22,6 +22,7 @@
   boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
 
+  # Enable networking
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;
 
@@ -35,6 +36,8 @@
   # Enable the Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
+  #  services.xserver.displayManager.autoLogin.enable = true;
+  #  services.xserver.displayManager.autoLogin.user = "inferno";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -46,7 +49,14 @@
 
   # Enable sound.
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    }
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -54,7 +64,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.inferno = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "sudo" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
     ];
   };
@@ -81,21 +91,13 @@
     discord
     steam
     lutris
-    kitty
     alacritty
-    kitty
     firefox
     brave
-    opera
     vivaldi
     vivaldi-ffmpeg-codecs
-    gparted
     bottles
-    boxes
-    blackbox-terminal
-    gnome-extension-manager
-    gnomeExtensions.appindicator
-    gnome.gnome-tweaks
+    partition-manager
   ];
 
   fonts.fonts = with pkgs; [

@@ -21,7 +21,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
-
+  # Enable networking
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;
 
@@ -43,9 +43,16 @@
   services.avahi.openFirewall = true;
   services.printing.drivers = [ pkgs.hplipWithPlugin ];
 
-  # Enable sound.
+  # Enable sound
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pusle.enable = true;
+    }
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -53,7 +60,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.inferno = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "sudo" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
     ];
   };
@@ -80,12 +87,9 @@
     discord
     steam
     lutris
-    kitty
     alacritty
-    kitty
     firefox
     brave
-    opera
     vivaldi
     vivaldi-ffmpeg-codecs
     gparted
