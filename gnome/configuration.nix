@@ -39,9 +39,17 @@
   services.printing.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
-  # for a WiFi printer
   services.avahi.openFirewall = true;
-  services.printing.drivers = [ pkgs.hplipWithPlugin ];
+  services.avahi.publish.enable = true;
+  services.avahi.publish.workstation = true;
+  services.printing.drivers = with pkgs; [
+   hplip
+   hplipWithPlugin
+   splix
+   gutenprint
+   gutenprintBin
+   samsung-unified-linux-driver
+  ];
 
   # Enable sound
   sound.enable = true;
