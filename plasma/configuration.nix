@@ -1,3 +1,7 @@
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
 { config, pkgs, ... }:
 
 {
@@ -5,57 +9,56 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
-    
-  # Allow unfree software
-  nixpkgs.config.allowUnfree = true;
 
-  # Virtualbox
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.guest.enable = true;
-  virtualisation.virtualbox.guest.x11 = true;
-  virtualisation.virtualbox.host.enableExtensionPack = true;
-  users.extraGroups.vboxusers.members = [ "inferno" ];
-
-  # Use the systemd-boot EFI boot loader.
+  # Bootloader.
   boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
 
-  # Enable networking
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos_alex"; # Define your hostname.
   networking.networkmanager.enable = true;
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Set your time zone.
   time.timeZone = "Europe/Rome";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "it_IT.UTF-8";
+    LC_IDENTIFICATION = "it_IT.UTF-8";
+    LC_MEASUREMENT = "it_IT.UTF-8";
+    LC_MONETARY = "it_IT.UTF-8";
+    LC_NAME = "it_IT.UTF-8";
+    LC_NUMERIC = "it_IT.UTF-8";
+    LC_PAPER = "it_IT.UTF-8";
+    LC_TELEPHONE = "it_IT.UTF-8";
+    LC_TIME = "it_IT.UTF-8";
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   services.xserver.displayManager.defaultSession = "plasmawayland";
 
-  # Enable the Plasma Desktop Environment.
+  # Enable the KDE Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  #  services.xserver.displayManager.autoLogin.enable = true;
-  #  services.xserver.displayManager.autoLogin.user = "inferno";
+
+  # Configure keymap in X11
+  services.xserver = {
+    layout = "us";
+    xkbVariant = "";
+  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
-  services.avahi.enable = true;
-  services.avahi.nssmdns = true;
-  services.avahi.openFirewall = true;
-  services.avahi.publish.enable = true;
-  services.avahi.publish.workstation = true;
-  services.printing.drivers = with pkgs; [
-   hplip
-   hplipWithPlugin
-   splix
-   gutenprint
-   gutenprintBin
-   samsung-unified-linux-driver
-  ];
 
-  # Enable sound.
+  # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -64,7 +67,13 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    }
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -72,44 +81,65 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.inferno = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "sudo" ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-    ];
+    extraGroups = [ "networkmanager" "wheel" ];
   };
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # Enable flatpak
+  services.flatpak.enable = true;
+
+  # Enabe steam
+  programs.steam.enable = true;
+  
+  # Enable virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.x11 = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
+  users.extraGroups.vboxusers.members = [ "inferno" ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    util-linux
-    fish
-    git
-    exa
-    vim
-    wget
-    tldr
-    starship
-    neofetch
-    pfetch
-    nitch
-    bunnyfetch
-    bottom
-    neovim
-    vscode
-    spotify
-    discord
-    steam
-    lutris
-    alacritty
-    firefox
-    brave
-    vivaldi
-    vivaldi-ffmpeg-codecs
-    bottles
-    partition-manager
+  util-linux
+  vim
+  neovim
+  fish
+  git
+  exa
+  starship
+  neofetch
+  bunnyfetch
+  nitch
+  pfetch
+  bottom
+  vscode
+  spotify
+  discord
+  alacritty
+  firefox
+  brave
+  vivaldi
+  vivaldi-ffmpeg-codecs
+  partition-manager
+  lightly-qt
+  steam
+  gparted
+  ntfs3g
+  ];
+
+  # Exclude some Plasma pkgs
+  environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+    elisa
+    oxygen
+    khelpcenter
+    plasma-browser-integration
   ];
 
   fonts.fonts = with pkgs; [
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerdfonts.override { fonts = ["JetBrainsMono" ]; })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -119,30 +149,24 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-  
-  services.udev.packages = with pkgs; [
-  ];
-  
-  # Excluding Plasma packages
-  environment.plasma5.excludePackages = with pkgs.libsForQt5; [
-    elisa
-    oxygen
-    khelpcenter
-    plasma-browser-integration
-  ];
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  # List services that you want to enable:
+
+  # Enable the OpenSSH daemon.
+  # services.openssh.enable = true;
+
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It's perfectly fine and recommended to leave
+  # on your system were taken. It‘s perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 
 }
-
