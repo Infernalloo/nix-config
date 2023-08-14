@@ -16,7 +16,7 @@
   boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
 
-  networking.hostName = "nixos_alex"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;
 
   # Configure network proxy if necessary
@@ -90,9 +90,6 @@
   # Enable flatpak
   services.flatpak.enable = true;
 
-  # Enabe steam
-  programs.steam.enable = true;
-  
   # Enable virtualbox
   virtualisation.virtualbox.host.enable = true;
   virtualisation.virtualbox.guest.enable = true;
@@ -117,17 +114,12 @@
   bottom
   vscode
   spotify
-  discord
   alacritty
-  firefox
-  brave
   vivaldi
   vivaldi-ffmpeg-codecs
-  partition-manager
   lightly-qt
-  steam
   gparted
-  ntfs3g
+  bitwarden
   ];
 
   # Exclude some Plasma pkgs
@@ -135,6 +127,8 @@
     elisa
     oxygen
     khelpcenter
+    kwallet
+    kwalletmanager
     plasma-browser-integration
   ];
 
