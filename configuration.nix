@@ -92,7 +92,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # Enable flatpak
-  services.flatpak.enable = true;
+  # services.flatpak.enable = true;
 
   # Enable virtualbox
   virtualisation.virtualbox.host.enable = true;
