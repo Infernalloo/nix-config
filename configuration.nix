@@ -36,11 +36,14 @@
 
   # Enable the X11 windowing system.
     services.xserver.enable = true;
-    services.xserver.displayManager.defaultSession = "plasmawayland";
+
+  # Enable hyprland
+    programs.hyprland.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
     services.xserver.displayManager.sddm.enable = true;
     services.xserver.desktopManager.plasma5.enable = true;
+    services.xserver.displayManager.defaultSession = "plasmawayland";
 
   # Enable the GNOME Desktop Environment.
     # services.xserver.displayManager.gdm.enable = true;
@@ -81,81 +84,52 @@
       extraGroups = [ "networkmanager" "wheel" ];
     };
 
-  # Allow unfree packages
+  # Packages support
     nixpkgs.config.allowUnfree = true;
-
-  # Enable flatpak
-    # services.flatpak.enable = true;
+    services.flatpak.enable = true;
 
   # Enable virtualbox
-    virtualisation.virtualbox.host.enable = true;
-    virtualisation.virtualbox.guest.enable = true;
-    virtualisation.virtualbox.guest.x11 = true;
-    virtualisation.virtualbox.host.enableExtensionPack = true;
-    users.extraGroups.vboxusers.members = [ "inferno" ];
+  #  virtualisation.virtualbox.host.enable = true;
+  #  virtualisation.virtualbox.guest.enable = true;
+  #  virtualisation.virtualbox.guest.x11 = true;
+  #  virtualisation.virtualbox.host.enableExtensionPack = true;
+  #  users.extraGroups.vboxusers.members = [ "inferno" ];
 
   # Packages to install system wide
     environment.systemPackages = with pkgs; [
       util-linux
       vim
       neovim
-      fish
       git
       exa
-      starship
       neofetch
-      bunnyfetch
       nitch
-      pfetch
       bottom
       vscode
-      spotify
-      alacritty
-      vivaldi
-      vivaldi-ffmpeg-codecs
-      lightly-qt
-      gparted
+      kitty
+      firefox
       bitwarden
+      mako
+      hyprpaper
+      networkmanagerapplet
     ];
 
   # Exclude some Plasma pkgs
-    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
-        elisa
-        oxygen
-        khelpcenter
-        kwallet
-        kwalletmanager
-        plasma-browser-integration
-    ];
+  #  environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+  #      elisa
+  #      oxygen
+  #      khelpcenter
+  #      kwallet
+  #      kwalletmanager
+  #      plasma-browser-integration
+  #  ];
 
-  # Set the font
+  # Font
     fonts.fonts = with pkgs; [
       (nerdfonts.override { fonts = ["JetBrainsMono" ]; })
     ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-    # programs.mtr.enable = true;
-    # programs.gnupg.agent = {
-    #   enable = true;
-    #   enableSSHSupport = true;
-    # };
-
-  # Enable the OpenSSH daemon.
     # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-    # networking.firewall.allowedTCPPorts = [ ... ];
-    # networking.firewall.allowedUDPPorts = [ ... ];
-    # Or disable the firewall altogether.
-    networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "23.05"; # Did you read the comment?
+    system.stateVersion = "23.05";
 
 }
