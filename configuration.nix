@@ -80,6 +80,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Activate flatpaks
+  services.flatpak.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -95,9 +98,8 @@
   vscode
   vivaldi
   vivaldi-ffmpeg-codecs
-  alacritty
+  firefox
   lightly-qt
-  catppuccin-papirus-folders
   gcc
   python3
   ];
