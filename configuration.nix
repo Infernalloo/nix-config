@@ -7,20 +7,28 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "nodev";
-  boot.loader.grub.useOSProber = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+    };
+
+    grub = {
+      enable = true;
+      device = "nodev";
+      efiSupport = true;
+      useOSProber = true;
+    };
+  };
 
   # Networking
-  networking.hostName = "nixos";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "nixos";
+
+    networkmanager = {
+      enable = true;
+    };
+
+  };
 
   # Locales and time zone
   time.timeZone = "Europe/Rome";
@@ -38,21 +46,35 @@
     LC_TIME = "it_IT.UTF-8";
   };
 
-  # Desktop
-  services.xserver.enable = true;
-
-  # Enable Plasma
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-  services.xserver.displayManager.defaultSession = "plasmawayland";
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+  # Services
+  services = {
+    xserver = {
+      enable = true;
+      layout = "us";
+      xkbVariant = "";
+      desktopManager = {
+        plasma5.enable = true;
+	gnome.enable = false;
+      };
+      displayManager = {
+        sddm.enable = true;
+	defaultSession = "plasmawayland";
+      };
+    };
+    devmon.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
+    printing = {
+      enable = true;
+    };
+    flatpak.enable = true;
   };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+  # Virtualisation
+  virtualisation = {
+    waydroid.enable = true;
+    libvirtd.enable = true;
+  };
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -72,16 +94,11 @@
   users.users.inferno = {
     isNormalUser = true;
     description = "inferno";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    ];
+    extraGroups = [ "networkmanager" "wheel" "storage" "libvirtd"];
   };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # Activate flatpaks
-  services.flatpak.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -91,17 +108,27 @@
   curl
   wget
   git
-  exa
+  eza
   neofetch
   nitch
   bottom
+  cmatrix
+  asciiquarium
   vscode
   vivaldi
   vivaldi-ffmpeg-codecs
   firefox
+  brave
   lightly-qt
   gcc
   python3
+  gh
+  ntfs3g
+  onlyoffice-bin
+  krita
+  gimp
+  steam
+  virt-manager
   ];
 
   # Exlucde KDE packages
@@ -114,9 +141,31 @@
  ];
 
 # Font
-  fonts.fonts = with pkgs; [
+  fonts.packages= with pkgs; [
     (nerdfonts.override { fonts = ["JetBrainsMono" ]; })
 ];
+
+  # Programs
+  programs = {
+    bash.shellAliases = {
+      rs = "sudo nixos-rebuild switch";
+      conf = "sudo nvim /etc/nixos/configuration.nix";
+      ls = "eza -la --header --git --sort=ext --color=always --group-directories-first";
+      la = "eza -a --header --git --sort=ext --color=always --group-directories-first";
+      ll = "eza -l --header --git --sort=ext --color=always --group-directories-first";
+      lt = "eza -aT --header --git --sort=ext --color=always --group-directories-first";
+      bios = "systemctl reboot --firmware-setup";
+      cp = "cp -i";
+      mv = "mv -i";
+      rm = "rm -i";
+      cmatrix = "cmatrix -C cyan";
+    };
+    hyprland = {
+      enable = false;
+      xwayland.enable = false;
+    };
+    dconf.enable = true;
+  };
 
 
   # Some programs need SUID wrappers, can be configured further or are
